@@ -41,7 +41,7 @@ Without `--config`, `serve` starts in visibly labeled extractive mode. It does n
 3. Read the draft and its unknowns. Select an evidence ID to open the corresponding extraction. Timestamp buttons seek the original video. Selected source frames remain available.
 4. Choose **Export Markdown** after validation passes. The download is canonical UTF-8 Markdown with LF line endings. Missing channels and uncertain extraction remain explicit; an invalid draft cannot be exported.
 
-This page supports reading and checking notes. It does not label the draft factually correct or finalize research annotations.md) remains available for formal labels, corrections, finalization, and evaluation.
+This page supports reading and checking notes. It does not label the draft factually correct or finalize research annotations. The [detailed human review workflow](11-review-evaluation.md) remains available for formal labels, corrections, finalization, and evaluation.
 
 ## Automatic draft mode
 

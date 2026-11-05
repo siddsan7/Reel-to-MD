@@ -8,7 +8,7 @@ Turn short educational videos into evidence-grounded Markdown using timestamped 
 - [Documentation index](docs/README.md): full plan, architecture, data protocol, training, guardrails, evaluation, and budget.
 - [20 clip pilot runbook](docs/08-pilot.md): sample selection and execution order.
 
-The implementation includes a Python CLI, local extraction/model adapters, versioned validation, safe Markdown, caching, run records. Native and container synthetic model checks pass. Real-video acceptance and trained weights remain pending. See [setup and usage](docs/09-local-pipeline.md) and [local review and evaluation](docs/11-review-evaluation.md).
+The implementation includes a Python CLI, local extraction/model adapters, versioned validation, safe Markdown, caching, run records, and human review/evaluation. Native and container synthetic model checks pass. Real-video acceptance and trained weights remain pending. See [setup and usage](docs/09-local-pipeline.md) and [local review and evaluation](docs/11-review-evaluation.md).
 
 ```powershell
 python -m uv sync --locked
@@ -23,6 +23,10 @@ To use the selected local models on Windows, run `./scripts/setup-local.ps1`, th
 ## Local browser UI
 
 Run `./scripts/start-ui.ps1`, then open **http://127.0.0.1:8791**. Upload a video, follow stage progress, inspect notes and evidence, and download validated Markdown. Cancellation and job recovery preserve completed stages and prior attempts. See [local UI setup and recovery](docs/12-local-ui.md). Everything runs on this device; Docker is optional. Configured automatic drafts now use exact source excerpts with bound citations; recognition errors still need source review. See [grounding checks](docs/reports/excerpt-grounding-fix.md).
+
+## Review and evaluate
+
+Use `review-init` on an attempt directory to create a local review page, `review-finalize` to validate annotations and export a separate reviewed revision, and `evaluate` to aggregate selected reviews. These commands make no model calls. [Review instructions](docs/11-review-evaluation.md) explain source verification, corrections, and metric denominators.
 
 ## Initial direction
 
