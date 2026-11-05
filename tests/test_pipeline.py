@@ -188,6 +188,43 @@ def test_actual_decoder_no_audio_and_corrupt_media(tmp_path):
         media.probe(clip)
 
 
+@pytest.mark.skipif(not shutil.which("ffmpeg") or not shutil.which("ffprobe"), reason="FFmpeg required")
+def test_media_rejects_manifest_disguised_as_video(tmp_path):
+    segment = tmp_path / "segment.ts"
+    subprocess.run(
+        ["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
+         "color=c=red:s=160x120:d=2", "-c:v", "mpeg2video", str(segment)],
+        check=True, capture_output=True, timeout=30,
+    )
+    manifest = tmp_path / "upload.mp4"
+    manifest.write_text(
+        "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:2\n"
+        "#EXTINF:2.0,\nsegment.ts\n#EXT-X-ENDLIST\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
+        media.probe(manifest)
+    output = tmp_path / "frames"
+    with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
+        media.frames(manifest, output, 2)
+    assert not list(output.iterdir())
+
+
+@pytest.mark.skipif(not shutil.which("ffmpeg") or not shutil.which("ffprobe"), reason="FFmpeg required")
+def test_frame_sampling_allows_audio_to_outlast_video(tmp_path):
+    clip = tmp_path / "audio-tail.mp4"
+    subprocess.run(
+        ["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi", "-i", "color=c=black:s=160x120:r=24:d=2",
+         "-f", "lavfi", "-i", "sine=frequency=440:duration=3", "-c:v", "mpeg4", "-c:a", "aac", str(clip)],
+        check=True, capture_output=True, timeout=30,
+    )
+    attempt, record = run_video(clip, tmp_path / "outputs")
+    assert record["validation"] == "passed"
+    assert read_json(attempt / "evidence.json")["duration_seconds"] == 3
+    assert [frame["seconds"] for frame in read_json(attempt / "frames.json")["frames"]] == [0]
+
+
 def test_runtime_ignoring_excerpt_schema_cannot_export(stub_media,monkeypatch):
     from reel_to_md.generation import DRAFT_TITLE, REVIEW_NOTE, SELECTION_NOTE, required_unknowns
     returned=[]
