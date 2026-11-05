@@ -189,26 +189,29 @@ def test_actual_decoder_no_audio_and_corrupt_media(tmp_path):
 
 
 @pytest.mark.skipif(not shutil.which("ffmpeg") or not shutil.which("ffprobe"), reason="FFmpeg required")
-def test_media_rejects_manifest_disguised_as_video(tmp_path):
+def test_media_rejects_indirect_video_manifests(tmp_path):
     segment = tmp_path / "segment.ts"
     subprocess.run(
         ["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
          "color=c=red:s=160x120:d=2", "-c:v", "mpeg2video", str(segment)],
         check=True, capture_output=True, timeout=30,
     )
-    manifest = tmp_path / "upload.mp4"
-    manifest.write_text(
+    playlist = tmp_path / "upload.m3u8"
+    playlist.write_text(
         "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:2\n"
         "#EXTINF:2.0,\nsegment.ts\n#EXT-X-ENDLIST\n",
         encoding="utf-8",
     )
 
-    with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
-        media.probe(manifest)
+    concat = tmp_path / "input.video"
+    concat.write_text("ffconcat version 1.0\nfile segment.ts\n", encoding="utf-8")
     output = tmp_path / "frames"
-    with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
-        media.frames(manifest, output, 2)
-    assert not list(output.iterdir())
+    for manifest in (playlist, concat):
+        with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
+            media.probe(manifest)
+        with pytest.raises(ValueError, match="decoder_or_extractor_failed"):
+            media.frames(manifest, output, 2)
+        assert not list(output.iterdir())
 
 
 @pytest.mark.skipif(not shutil.which("ffmpeg") or not shutil.which("ffprobe"), reason="FFmpeg required")
