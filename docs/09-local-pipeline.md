@@ -8,6 +8,8 @@ Accept a local video up to 100 MiB, 120 seconds, and 3840×2160 pixels. Produce 
 
 The implemented default produces an extractive draft. It copies evidence with attribution, makes no procedural commands or conflict-resolution claims, and explicitly requires human review. This establishes pipeline wiring; it does not meet the two-real-clip quality gate.
 
+Use a standalone MP4, MOV, M4V, MKV, WebM, or AVI file. The decoder checks the actual container and rejects playlists and concatenation manifests. When audio lasts longer than video, frame sampling stops at the last available frame and the evidence packet keeps the full clip duration.
+
 ## Environment
 
 Use Python 3.12 and uv. `uv.lock` locks the core, development, and optional ASR dependency graph. The tested environment uses Python 3.12.10 on Windows. Install uv if it is unavailable; then:
