@@ -15,6 +15,13 @@ from .contracts import redact_text
 from .storage import file_hash
 
 
+# Playlists and concat manifests can read files outside the hashed input.
+LOCAL_VIDEO_INPUT = (
+    "-protocol_whitelist", "file,pipe",
+    "-format_whitelist", "mov,matroska,webm,avi",
+)
+
+
 def command(args, timeout=60):
     result = subprocess.run(args, capture_output=True, timeout=timeout, check=False)
     if result.returncode:
@@ -50,7 +57,7 @@ def probe(path):
     path = Path(path).resolve(strict=True)
     if not path.is_file() or path.stat().st_size > 100 * 1024 * 1024:
         raise ValueError("media_size_limit")
-    raw = command(["ffprobe", "-v", "error", "-protocol_whitelist", "file,pipe", "-show_format", "-show_streams", "-of", "json", str(path)], 20)
+    raw = command(["ffprobe", "-v", "error", *LOCAL_VIDEO_INPUT, "-show_format", "-show_streams", "-of", "json", str(path)], 20)
     info = json.loads(raw)
     duration = float(info.get("format", {}).get("duration", 0))
     video = next((x for x in info["streams"] if x["codec_type"] == "video"), None)
@@ -70,7 +77,13 @@ def frames(path, directory, duration, interval=2.0, cap=60, difference=2.0):
     for index in range(min(count, cap)):
         timestamp = index * interval
         output = directory / f"frame-{index:04}.png"
-        command(["ffmpeg", "-nostdin", "-v", "error", "-protocol_whitelist", "file,pipe", "-ss", str(timestamp), "-i", str(Path(path).resolve()), "-frames:v", "1", "-threads", "1", "-y", str(output)])
+        output.unlink(missing_ok=True)
+        command(["ffmpeg", "-nostdin", "-v", "error", *LOCAL_VIDEO_INPUT, "-ss", str(timestamp), "-i", str(Path(path).resolve()), "-frames:v", "1", "-threads", "1", "-y", str(output)])
+        if not output.is_file():
+            # FFmpeg can exit successfully past the last video frame in an audio tail.
+            if not selected:
+                raise ValueError("no_decodable_video_frame")
+            break
         with Image.open(output) as original:
             thumb = original.convert("L").resize((64, 64))
         if previous is not None and ImageStat.Stat(ImageChops.difference(thumb, previous)).mean[0] < difference:
