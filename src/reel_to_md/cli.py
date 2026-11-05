@@ -26,11 +26,33 @@ def main(argv=None):
     ui.add_argument("--config", type=Path, help="Local pipeline configuration; omitted uses extractive drafts")
     ui.add_argument("--store", type=Path, default=Path("outputs/local-ui"))
     ui.add_argument("--port", type=int, default=8791)
+    review = commands.add_parser("review-init", help="Create an offline human-review page and annotations")
+    review.add_argument("attempt", type=Path)
+    review.add_argument("--video", type=Path, help="Original local video; required for natural-clip finalization")
+    review.add_argument("--target", type=Path, help="Score a separately reviewed target instead of the original first pass")
+    review.add_argument("--output", type=Path)
+    finalize = commands.add_parser("review-finalize", help="Validate human annotations and export a new review revision")
+    finalize.add_argument("review", type=Path, help="Completed annotation JSON beside source.json")
+    finalize.add_argument("--output", type=Path)
+    evaluate = commands.add_parser("evaluate", help="Aggregate finalized human reviews without model calls")
+    evaluate.add_argument("reviews", type=Path, nargs="+")
+    evaluate.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     try:
         if args.action == "serve":
             from .ui import serve
             serve(args.store, Config(**read_json(args.config)) if args.config else Config(), args.port)
+            return 0
+        if args.action in {"review-init", "review-finalize", "evaluate"}:
+            from .review import initialize, finalize as finalize_review, evaluate as evaluate_reviews
+            output = args.output or Path("outputs") / ("evaluations" if args.action == "evaluate" else "reviews") / uuid.uuid4().hex
+            if args.action == "review-init":
+                directory = initialize(args.attempt, output, video=args.video, target=args.target)
+            elif args.action == "review-finalize":
+                directory = finalize_review(args.review, output)
+            else:
+                directory = evaluate_reviews(args.reviews, output)
+            print(f"{args.action}: {directory}")
             return 0
         if args.action == "check-example":
             start = time.monotonic()
@@ -48,7 +70,8 @@ def main(argv=None):
         print(f"{record['state']}: {directory.resolve()}")
         return 1 if record["state"] == "failed" else 0
     except (ValueError, OSError, TypeError, KeyError) as exc:
-        detail = "check input and configuration"
+        # Review validation messages contain field names, never source content.
+        detail = str(exc) if args.action in {"review-init", "review-finalize", "evaluate"} and type(exc) is ValueError else "check input and configuration"
         print(f"Failed ({type(exc).__name__}): {detail}.", file=sys.stderr)
         return 1
 
