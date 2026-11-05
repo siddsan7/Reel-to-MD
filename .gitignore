@@ -1,0 +1,31 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+/secrets/
+/credentials/
+
+# Private research data and generated artifacts
+/data/private/
+/outputs/
+/work/
+/models/
+/checkpoints/
+/runs/
+/wandb/
+
+# Local Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+/build/
+/dist/
+
+# Operating system metadata
+.DS_Store
+Thumbs.db

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Reel to MD · Local workspace</title>
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Reel to MD home">reel<span>/</span>md <small>LOCAL WORKSPACE</small></a>
+    <button id="new-video" class="primary wide">＋ New video</button>
+    <div class="sidebar-heading">YOUR VIDEOS <span id="job-count">0</span></div>
+    <nav id="jobs" aria-label="Video jobs"></nav>
+    <div class="sidebar-foot"><span class="dot"></span> On this device<p>Videos, models, and notes stay local.<br>No account or paid API.</p></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>VIDEO → EVIDENCE → NOTES</span><span id="mode" class="pill">Connecting…</span></header>
+    <div id="connection" class="notice" role="status" hidden>Connection lost. Saved jobs remain on this device. Reconnecting…</div>
+    <div id="error" class="notice error" role="alert" hidden></div>
+    <section id="upload-view" class="welcome">
+      <p class="eyebrow">YOUR LOCAL NOTEBOOK</p>
+      <h1>Keep the useful parts.</h1>
+      <p class="intro">Turn a short tutorial into notes you can trace back to the video. Review the evidence, then take the Markdown with you.</p>
+      <form id="upload-form">
+        <label id="drop-zone" class="drop-zone" for="video-file"><span class="upload-symbol" aria-hidden="true">↑</span><strong id="file-label">Choose a video or drop it here</strong><span>MP4, MOV, WebM, MKV, AVI · up to 100 MiB · 2 minutes</span>
+          <input id="video-file" type="file" accept=".mp4,.mov,.webm,.mkv,.avi,.m4v" required>
+        </label>
+        <div class="upload-bottom"><span id="profile">Checking local configuration…</span><button id="upload-button" class="primary" type="submit">Create notes <span aria-hidden="true">↗</span></button></div>
+        <div id="upload-progress" role="status" hidden><progress id="upload-meter" max="100" value="0"></progress><span id="upload-label">Uploading to this device…</span></div>
+      </form>
+      <div class="how"><div><b>01</b><h3>Add a video</h3><p>Start with a short English tutorial.</p></div><div><b>02</b><h3>Follow the evidence</h3><p>Audio, screen text, and selected frames.</p></div><div><b>03</b><h3>Review & export</h3><p>Check the draft. Save plain Markdown.</p></div></div>
+    </section>
+    <section id="job-view" hidden>
+      <div class="job-heading"><div><p class="eyebrow">VIDEO WORKSPACE</p><h1 id="job-title"></h1></div><span id="status" class="pill"></span></div>
+      <section class="progress-card" aria-label="Processing status">
+        <div class="progress-heading"><strong id="stage-title">Waiting</strong><span id="elapsed"></span></div>
+        <ol id="stages" class="stages"></ol>
+        <p id="job-message" role="status" aria-live="polite"></p>
+        <div class="actions"><button id="cancel-button" class="secondary" hidden>Cancel processing</button><button id="resume-button" class="primary" hidden>Recover job</button><a id="export-button" class="primary" hidden download="notes.md">Export Markdown ↓</a></div>
+      </section>
+      <dialog id="recovery-dialog"><form method="dialog"><p class="eyebrow">RECOVER SAVED WORK</p><h2>Continue this job?</h2><p>Completed stages will be checked and reused. Previous attempts stay saved.</p><p>If a model request was interrupted, it may still be running in your local model server. Wait for it to finish before allowing another request.</p><label class="check"><input id="retry-ack" type="checkbox"> I have checked that earlier local processing has stopped and allow a new model request if its previous outcome is unknown.</label><div class="actions"><button class="secondary" value="cancel">Go back</button><button id="confirm-resume" class="primary" value="resume">Continue</button></div></form></dialog>
+      <div class="workspace-grid">
+        <section class="notes-panel"><div class="section-heading"><h2>Draft notes</h2><span id="review-label" class="quiet">Awaiting processing</span></div><div id="notes"><p class="placeholder">Notes appear here after synthesis and validation. You can leave this page open while the local models work.</p></div></section>
+        <aside class="source-panel"><h2>Source video</h2><video id="source-video" controls preload="metadata"></video><p class="quiet">Compare the draft with the original. A valid draft still needs a factual review.</p><details id="frames-details"><summary>Selected frames <span id="frame-count"></span></summary><div id="frames" class="frames"></div></details><details id="evidence-details"><summary>Extracted evidence <span id="evidence-count"></span></summary><div id="evidence"></div></details></aside>
+      </div>
+    </section>
+    <footer>LOCAL BY DESIGN <span>Markdown you can inspect. Evidence you can revisit.</span></footer>
+  </main>
+</body>
+</html>

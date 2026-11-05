@@ -1,0 +1,13 @@
+{
+  "asr_model": "/models/whisper-small.en",
+  "endpoint": "http://127.0.0.1:11434/v1",
+  "model_backend": "ollama",
+  "vision_model": "qwen3-vl:4b-instruct",
+  "vision_revision": "ee4b975b58c17ce268cd19d40db35d5edc64603035d2ffc1fee1968eb0947f7b",
+  "text_model": "qwen3:4b-instruct-2507-q4_K_M",
+  "text_revision": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+  "context_tokens": 8192,
+  "output_tokens": 2048,
+  "model_timeout_seconds": 300,
+  "ollama_threads": 8
+}
