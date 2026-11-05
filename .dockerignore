@@ -1,0 +1,14 @@
+# Allow only source, packaging inputs and the public synthetic example.
+**
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!src/reel_to_md/
+!src/reel_to_md/**
+!docs/
+!docs/examples/
+!docs/examples/example.json
+**/__pycache__/
+**/*.pyc

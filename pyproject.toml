@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reel-to-md"
+version = "0.1.0"
+description = "Local video to evidence-grounded Markdown research pipeline"
+requires-python = ">=3.12,<3.14"
+dependencies = ["jsonschema>=4.23,<5", "Pillow>=11,<13"]
+
+[project.optional-dependencies]
+# faster-whisper 1.2.1 uses av.open(metadata_errors=...), removed in PyAV 19.
+asr = ["faster-whisper>=1.1,<2", "av>=11,<19"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+reel-to-md = "reel_to_md.cli:main"
+
+[tool.setuptools.package-data]
+reel_to_md = ["schemas/*.json", "prompts/*.txt", "web/*.html", "web/*.css", "web/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
