@@ -4,7 +4,7 @@ Version 0.1 · 18 October 2026 · Planning baseline
 
 Build an Android application that accepts an Instagram reel link or an uploaded video and exports evidence-grounded Markdown for a human and an agent to work through together. The research contribution is post-training a compact text model to synthesize timestamped transcription, OCR, and visual descriptions.
 
-The plan below is the original research baseline. The current implementation includes a local CLI and evidence pipeline. Two real development clips have validated draft notes; human factual review remains pending. Models have not been trained. See the [bound excerpt report](reports/excerpt-grounding-fix.md) for verified results.
+The plan below is the original research baseline. The current implementation includes a local CLI and browser UI. Two real development clips have validated draft notes; human factual review remains pending. Models have not been trained. See the [bound excerpt report](reports/excerpt-grounding-fix.md) for verified results.
 
 ## Reading order
 
@@ -18,7 +18,9 @@ The plan below is the original research baseline. The current implementation inc
 8. [20 clip pilot runbook](08-pilot.md)
 9. [Local pipeline setup](09-local-pipeline.md)
 10. [Local models and optional Docker](10-local-models.md)
-11. [Bound excerpt drafting and Windows persistence fix](reports/excerpt-grounding-fix.md)
+11. [Local UI, cancellation, and recovery](12-local-ui.md)
+12. [Real UI checks and current grounding limits](reports/local-ui-real-clips.md)
+13. [Bound excerpt drafting and Windows persistence fix](reports/excerpt-grounding-fix.md)
 
 ## Working templates
 
@@ -49,7 +51,7 @@ The intake manifest has 20 planned slots, not collected videos. The example is s
 | Total initial cash ceiling | USD 40; aim to finish within USD 30 |
 | Pilot training | Optional plumbing check only |
 | Quality thresholds | Proposed; freeze after pilot and before final study |
-| Application and pipelines | Local CLI implemented; human real-video acceptance pending |
+| Application and pipelines | Local CLI and browser UI implemented; human real-video acceptance pending |
 | Public release | Requires user or assigned reviewer review |
 
 Use the local documents as the detailed working reference. Update the version and decision record when the plan changes materially.

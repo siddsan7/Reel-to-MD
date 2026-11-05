@@ -25,4 +25,8 @@ if __name__ == "__main__":
     output = ROOT / "data/private/local-config.json"
     write_json(output, config)
     print(f"Local configuration: {output}")
+    ui_config = {**config, "context_tokens": 16384, "model_timeout_seconds": 1200, "ollama_threads": 8}
+    Config(**ui_config).validate()
+    ui_output = ROOT / "data/private/local-ui-config.json"
+    write_json(ui_output, ui_config)
     print(f"Local UI CPU configuration: {ui_output} (16K context, 8 threads, 1200-second call deadline)")

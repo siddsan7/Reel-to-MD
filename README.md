@@ -4,6 +4,7 @@ Turn short educational videos into evidence-grounded Markdown using timestamped 
 
 ## Start here
 
+- [Bound excerpt verification](docs/reports/excerpt-grounding-fix.md): current draft behavior and real-clip checks.
 - [Documentation index](docs/README.md): full plan, architecture, data protocol, training, guardrails, evaluation, and budget.
 - [20 clip pilot runbook](docs/08-pilot.md): sample selection and execution order.
 
@@ -18,6 +19,10 @@ python -m uv sync --locked
 The example is a synthetic wiring check. Video jobs use FFmpeg/ffprobe, optional Tesseract and local ASR weights; unavailable channels are explicit. Without a configured synthesis model, exports are conservative extractive drafts requiring review. No API keys are needed, and hosted inference is disabled.
 
 To use the selected local models on Windows, run `./scripts/setup-local.ps1`, then pass `--config data/private/local-config.json` to `run`. See [local models and optional Docker](docs/10-local-models.md). Native execution and the full Docker CPU pipeline have passed synthetic workflow and cache checks. Docker uses bounded OCR scaling and explicit model threads; see the [measured results](docs/reports/docker-fixes.md). Native setup works independently.
+
+## Local browser UI
+
+Run `./scripts/start-ui.ps1`, then open **http://127.0.0.1:8791**. Upload a video, follow stage progress, inspect notes and evidence, and download validated Markdown. Cancellation and job recovery preserve completed stages and prior attempts. See [local UI setup and recovery](docs/12-local-ui.md). Everything runs on this device; Docker is optional. Configured automatic drafts now use exact source excerpts with bound citations; recognition errors still need source review. See [grounding checks](docs/reports/excerpt-grounding-fix.md).
 
 ## Initial direction
 
