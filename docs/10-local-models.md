@@ -91,3 +91,6 @@ For Linux bind mounts, the output directory must be writable by UID 10001, or ru
 
 
 Real-clip synthesis uses compact, lossless packet messages and a separately supplied decoding schema. Mandatory uncertainty entries use fixed tuples compatible with the installed local decoder; exact commands are bound to one normal OCR source. These generation restrictions preserve the original semantic validator. See [real synthesis repair](reports/real-synthesis-fix.md) for measured failures, explicit CPU profiles, and current review results. The 1,200-second maximum is optional; the default remains 300 seconds. The current repair is tested natively; its real-clip container run has not been repeated.
+
+
+Setup also writes a separate `data/private/local-ui-config.json` with the measured real-clip CPU resource settings. Start `./scripts/start-ui.ps1` to use it in the [local upload, review, export, and recovery workspace](12-local-ui.md). The standard configuration remains separate.
