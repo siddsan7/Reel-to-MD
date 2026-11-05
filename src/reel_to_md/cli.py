@@ -22,8 +22,16 @@ def main(argv=None):
     run.add_argument("video", type=Path)
     run.add_argument("--output", type=Path, default=Path("outputs/jobs"))
     run.add_argument("--config", type=Path, help="JSON Config fields; local-only models")
+    ui = commands.add_parser("serve", help="Open the local upload, progress, review, and export UI")
+    ui.add_argument("--config", type=Path, help="Local pipeline configuration; omitted uses extractive drafts")
+    ui.add_argument("--store", type=Path, default=Path("outputs/local-ui"))
+    ui.add_argument("--port", type=int, default=8791)
     args = parser.parse_args(argv)
     try:
+        if args.action == "serve":
+            from .ui import serve
+            serve(args.store, Config(**read_json(args.config)) if args.config else Config(), args.port)
+            return 0
         if args.action == "check-example":
             start = time.monotonic()
             value = read_json(args.example)
