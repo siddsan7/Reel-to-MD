@@ -1,0 +1,1 @@
+event_id,date,stage,clip_or_run_id,provider,model_version,endpoint_region,input_tokens,billed_output_tokens,rate_input_usd_per_million,rate_output_usd_per_million,gpu_hours,gpu_rate_usd,other_usage_usd,usage_cost_usd,cash_paid_usd,remaining_credit_usd,price_source,measurement_or_estimate,notes
